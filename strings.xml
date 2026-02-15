@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Usage Tracker</string>
+    
+    <!-- Main Activity -->
+    <string name="welcome_title">Welcome to Usage Tracker Study</string>
+    <string name="welcome_description">This app will track your smartphone usage for 10 days to help researchers understand phone usage patterns.</string>
+    <string name="enter_name_prompt">Please enter your name:</string>
+    <string name="name_hint">Full Name</string>
+    <string name="start_button">Start Study</string>
+    <string name="privacy_notice">Your data will be used for research purposes only.</string>
+    
+    <!-- Permission Setup -->
+    <string name="setup_permissions_title">Setup Permissions</string>
+    <string name="permissions_description">This app needs two special permissions to track your usage:</string>
+    <string name="usage_access_title">1. Usage Access</string>
+    <string name="usage_access_description">Required to track screen time and app usage.</string>
+    <string name="grant_usage_access">Grant Usage Access</string>
+    <string name="notification_access_title">2. Notification Access</string>
+    <string name="notification_access_description">Required to track notifications.</string>
+    <string name="grant_notification_access">Grant Notification Access</string>
+    <string name="continue_button">Continue to Dashboard</string>
+    
+    <!-- Dashboard -->
+    <string name="study_day_format">Study Day %1$d of 10</string>
+    <string name="data_from_date">Data from: %1$s</string>
+    <string name="screen_time_format">Total Screen Time: %1$dh %2$dm</string>
+    <string name="unlocks_format">Phone Unlocks: %1$d</string>
+    <string name="notifications_format">Notifications: %1$d</string>
+    <string name="top_apps_title">Top Apps:</string>
+    <string name="top_notifications_title">Most Notifications:</string>
+    <string name="sync_button">Sync to Google Sheets</string>
+    <string name="syncing">Syncing...</string>
+    <string name="sync_success">Data synced!</string>
+    <string name="screen_time_trend">Screen Time Trend</string>
+    <string name="app_usage_title">Yesterday\'s App Usage</string>
+    
+    <!-- Notifications -->
+    <string name="service_notification_title">Usage Tracker Running</string>
+    <string name="service_notification_text">Tracking your phone usage for research</string>
+    <string name="reminder_notification_title">📊 Check Your Usage Stats!</string>
+    <string name="reminder_notification_text">See how much screen time you had yesterday</string>
+    
+    <!-- Errors -->
+    <string name="error_loading_data">Error loading data</string>
+    <string name="error_name_required">Please enter your name</string>
+    <string name="no_data_yet">No data available yet</string>
+    <string name="check_back_tomorrow">Check back tomorrow!</string>
+</resources>
