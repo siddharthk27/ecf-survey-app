@@ -1,0 +1,14 @@
+[
+    {
+        "merged": "com.research.usagetracker.app-merged_res-38:/layout_activity_permission_setup.xml.flat",
+        "source": "com.research.usagetracker.app-main-40:/layout/activity_permission_setup.xml"
+    },
+    {
+        "merged": "com.research.usagetracker.app-merged_res-38:/layout_activity_dashboard.xml.flat",
+        "source": "com.research.usagetracker.app-main-40:/layout/activity_dashboard.xml"
+    },
+    {
+        "merged": "com.research.usagetracker.app-merged_res-38:/layout_activity_main.xml.flat",
+        "source": "com.research.usagetracker.app-main-40:/layout/activity_main.xml"
+    }
+]

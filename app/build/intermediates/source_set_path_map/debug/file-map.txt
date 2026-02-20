@@ -1,0 +1,41 @@
+com.research.usagetracker.app-jetified-savedstate-1.2.1-0 /home/sid27/.gradle/caches/transforms-4/092695fa81137b2e4e973a636e389f9c/transformed/jetified-savedstate-1.2.1/res
+com.research.usagetracker.app-jetified-startup-runtime-1.1.1-1 /home/sid27/.gradle/caches/transforms-4/0cbb5047313e8c651b09be319c3b937e/transformed/jetified-startup-runtime-1.1.1/res
+com.research.usagetracker.app-jetified-activity-1.8.0-2 /home/sid27/.gradle/caches/transforms-4/1335abde15eaeb2188b38fc21783e028/transformed/jetified-activity-1.8.0/res
+com.research.usagetracker.app-transition-1.2.0-3 /home/sid27/.gradle/caches/transforms-4/169904b3d8433024b09bf877da0d2a87/transformed/transition-1.2.0/res
+com.research.usagetracker.app-lifecycle-livedata-core-2.6.1-4 /home/sid27/.gradle/caches/transforms-4/1d7823becee930cb3d30c2ba8e53da8f/transformed/lifecycle-livedata-core-2.6.1/res
+com.research.usagetracker.app-cardview-1.0.0-5 /home/sid27/.gradle/caches/transforms-4/1f536b488d9cc78a6e935ab1a8f2f0fa/transformed/cardview-1.0.0/res
+com.research.usagetracker.app-drawerlayout-1.1.1-6 /home/sid27/.gradle/caches/transforms-4/202b04a755a10adf5139f4d69100b022/transformed/drawerlayout-1.1.1/res
+com.research.usagetracker.app-coordinatorlayout-1.1.0-7 /home/sid27/.gradle/caches/transforms-4/3734af3fceca79d8b9330e59b0c06b14/transformed/coordinatorlayout-1.1.0/res
+com.research.usagetracker.app-lifecycle-livedata-2.6.1-8 /home/sid27/.gradle/caches/transforms-4/3917b8850dad18b0c313ad9bc532c3bb/transformed/lifecycle-livedata-2.6.1/res
+com.research.usagetracker.app-jetified-lifecycle-service-2.6.1-9 /home/sid27/.gradle/caches/transforms-4/405628293fc3171b589df39acd3e5454/transformed/jetified-lifecycle-service-2.6.1/res
+com.research.usagetracker.app-recyclerview-1.1.0-10 /home/sid27/.gradle/caches/transforms-4/42488e72977e11fc23e9f0be954ff069/transformed/recyclerview-1.1.0/res
+com.research.usagetracker.app-jetified-emoji2-views-helper-1.2.0-11 /home/sid27/.gradle/caches/transforms-4/4e59cf356af21f34ba8fd17d9cbf2b00/transformed/jetified-emoji2-views-helper-1.2.0/res
+com.research.usagetracker.app-jetified-room-ktx-2.6.1-12 /home/sid27/.gradle/caches/transforms-4/4eb6a2667b69d1e48db66b8e85965462/transformed/jetified-room-ktx-2.6.1/res
+com.research.usagetracker.app-jetified-lifecycle-viewmodel-savedstate-2.6.1-13 /home/sid27/.gradle/caches/transforms-4/6a8279416d6519a75a620113dc3e8808/transformed/jetified-lifecycle-viewmodel-savedstate-2.6.1/res
+com.research.usagetracker.app-jetified-appcompat-resources-1.6.1-14 /home/sid27/.gradle/caches/transforms-4/76e5188f1438c6a816ba63124c8bc631/transformed/jetified-appcompat-resources-1.6.1/res
+com.research.usagetracker.app-material-1.11.0-15 /home/sid27/.gradle/caches/transforms-4/7ad739e0f3c20a60a300c840e67f1b4d/transformed/material-1.11.0/res
+com.research.usagetracker.app-room-runtime-2.6.1-16 /home/sid27/.gradle/caches/transforms-4/85198fad249bb852dcbf45e5ff1f8050/transformed/room-runtime-2.6.1/res
+com.research.usagetracker.app-jetified-viewpager2-1.0.0-17 /home/sid27/.gradle/caches/transforms-4/8eb6864931f6aea71f9508224dab0fc3/transformed/jetified-viewpager2-1.0.0/res
+com.research.usagetracker.app-work-runtime-2.9.0-18 /home/sid27/.gradle/caches/transforms-4/97f42c50ca12f848da34764622c00b1d/transformed/work-runtime-2.9.0/res
+com.research.usagetracker.app-sqlite-framework-2.4.0-19 /home/sid27/.gradle/caches/transforms-4/9b7fbb068791f61ee0870ce3e88f6df5/transformed/sqlite-framework-2.4.0/res
+com.research.usagetracker.app-lifecycle-runtime-2.6.1-20 /home/sid27/.gradle/caches/transforms-4/aa872a537bdb91fb753a85f7c91d42f7/transformed/lifecycle-runtime-2.6.1/res
+com.research.usagetracker.app-core-runtime-2.2.0-21 /home/sid27/.gradle/caches/transforms-4/ac72d46f5f34bdfaff174a87cd72c38d/transformed/core-runtime-2.2.0/res
+com.research.usagetracker.app-fragment-1.3.6-22 /home/sid27/.gradle/caches/transforms-4/b049fac3a001ea3e13fb8a4907036a87/transformed/fragment-1.3.6/res
+com.research.usagetracker.app-constraintlayout-2.1.4-23 /home/sid27/.gradle/caches/transforms-4/b601b4ddd064d698dd572c5b270b6ecc/transformed/constraintlayout-2.1.4/res
+com.research.usagetracker.app-appcompat-1.6.1-24 /home/sid27/.gradle/caches/transforms-4/b69dc52d30382c31bce5ca97504c5f2a/transformed/appcompat-1.6.1/res
+com.research.usagetracker.app-jetified-core-ktx-1.12.0-25 /home/sid27/.gradle/caches/transforms-4/b8d0a2e072e4adaac49490d9323831cc/transformed/jetified-core-ktx-1.12.0/res
+com.research.usagetracker.app-jetified-emoji2-1.2.0-26 /home/sid27/.gradle/caches/transforms-4/c5dce3d20406f51ab89e7246950e9fc3/transformed/jetified-emoji2-1.2.0/res
+com.research.usagetracker.app-jetified-lifecycle-process-2.6.1-27 /home/sid27/.gradle/caches/transforms-4/cd424a0949e37d83b0792726902370a2/transformed/jetified-lifecycle-process-2.6.1/res
+com.research.usagetracker.app-lifecycle-viewmodel-2.6.1-28 /home/sid27/.gradle/caches/transforms-4/d0d9427cb466a73288f3488f68474003/transformed/lifecycle-viewmodel-2.6.1/res
+com.research.usagetracker.app-sqlite-2.4.0-29 /home/sid27/.gradle/caches/transforms-4/d1ae21063add2ebf47d6c796870869b6/transformed/sqlite-2.4.0/res
+com.research.usagetracker.app-work-runtime-ktx-2.9.0-30 /home/sid27/.gradle/caches/transforms-4/d89e21bd72d86749409a5377fd54694d/transformed/work-runtime-ktx-2.9.0/res
+com.research.usagetracker.app-jetified-annotation-experimental-1.3.0-31 /home/sid27/.gradle/caches/transforms-4/decb895d1dd8bcbb8e16995219e458d8/transformed/jetified-annotation-experimental-1.3.0/res
+com.research.usagetracker.app-core-1.12.0-32 /home/sid27/.gradle/caches/transforms-4/ee0c658bc9ded9e892b7c673c536a831/transformed/core-1.12.0/res
+com.research.usagetracker.app-jetified-profileinstaller-1.3.0-33 /home/sid27/.gradle/caches/transforms-4/ee6781ce93149d040e3caae4097bd256/transformed/jetified-profileinstaller-1.3.0/res
+com.research.usagetracker.app-pngs-34 /home/sid27/ecf survey app /app/build/generated/res/pngs/debug
+com.research.usagetracker.app-resValues-35 /home/sid27/ecf survey app /app/build/generated/res/resValues/debug
+com.research.usagetracker.app-packageDebugResources-36 /home/sid27/ecf survey app /app/build/intermediates/incremental/debug/packageDebugResources/merged.dir
+com.research.usagetracker.app-packageDebugResources-37 /home/sid27/ecf survey app /app/build/intermediates/incremental/debug/packageDebugResources/stripped.dir
+com.research.usagetracker.app-merged_res-38 /home/sid27/ecf survey app /app/build/intermediates/merged_res/debug
+com.research.usagetracker.app-debug-39 /home/sid27/ecf survey app /app/src/debug/res
+com.research.usagetracker.app-main-40 /home/sid27/ecf survey app /app/src/main/res

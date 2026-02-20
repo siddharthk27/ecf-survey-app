@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Participants collection - only Cloud Functions can write
+    match /participants/{participantId} {
+      allow read, write: if false;  // Only backend can access
+    }
+    
+    // Sync logs - only Cloud Functions can write
+    match /sync_logs/{logId} {
+      allow read, write: if false;  // Only backend can access
+    }
+  }
+}

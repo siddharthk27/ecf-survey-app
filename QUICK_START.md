@@ -1,187 +1,188 @@
-# Quick Start Guide for Researchers
+# Quick Start Guide - Firebase Backend Version
 
-## 🚀 Get Started in 5 Steps
+## 🚀 Get Started in 6 Steps (45 minutes total)
 
-### Step 1: Google Cloud Setup (15 minutes)
-1. Go to [Google Cloud Console](https://console.cloud.google.com/)
-2. Create new project: "Usage Tracker Research"
-3. Enable "Google Sheets API"
-4. Create OAuth 2.0 credentials for Android app
-   - Package: `com.research.usagetracker`
-   - Get SHA-1: `keytool -list -v -keystore ~/.android/debug.keystore -alias androiddebugkey`
+### Step 1: Firebase Project Setup (10 minutes)
 
-### Step 2: Create Data Collection Sheet (5 minutes)
-1. Create new Google Sheet
-2. Add headers in row 1:
+1. Go to https://console.firebase.google.com/
+2. Click "Add project"
+3. Name: "usage-tracker-research"
+4. Disable Google Analytics
+5. **Upgrade to Blaze plan** (pay-as-you-go, FREE for research)
+6. Enable **Firestore Database** (production mode)
+7. Enable **Cloud Functions**
+
+### Step 2: Service Account Setup (10 minutes)
+
+1. Go to https://console.cloud.google.com/
+2. Select your Firebase project
+3. Menu → "IAM & Admin" → "Service Accounts"
+4. Click "CREATE SERVICE ACCOUNT"
+   - Name: `usage-tracker-backend`
+   - Click CREATE → CONTINUE → DONE
+5. Click the three dots → "Manage keys" → "ADD KEY" → JSON
+6. **Download JSON** file (KEEP SECURE!)
+7. **Copy the service account email** (looks like: `...@PROJECT.iam.gserviceaccount.com`)
+8. Enable **Google Sheets API**: Menu → "APIs & Services" → "Library" → Search "Sheets" → Enable
+
+### Step 3: Google Sheet Setup (5 minutes)
+
+1. Create new Google Sheet at https://sheets.google.com
+2. Name it: "Usage Tracker Research Data"
+3. Add column headers in row 1:
    ```
    Date | User Name | Anonymous ID | Study Day | Screen Time (min) | Top Apps | Total Unlocks | Top Unlock Apps | Total Notifications | Top Notification Apps
    ```
-3. Copy the Sheet ID from URL
-4. Share with your Google account
+4. Click "Share" → Paste service account email → Set as "Editor" → UNCHECK "Notify" → Share
+5. Copy Sheet ID from URL: `https://docs.google.com/spreadsheets/d/[COPY_THIS_PART]/edit`
 
-### Step 3: Configure App (2 minutes)
-In `AppPreferences.kt`, line 28:
-```kotlin
-fun getSheetId(): String = "PASTE_YOUR_SHEET_ID_HERE"
+### Step 4: Deploy Firebase Backend (15 minutes)
+
+```bash
+# Install Firebase CLI
+npm install -g firebase-tools
+
+# Login
+firebase login
+
+# Navigate to backend folder
+cd firebase-backend
+
+# Set configuration
+firebase functions:config:set sheets.id="YOUR_SHEET_ID"
+firebase functions:config:set service.email="YOUR_SERVICE_ACCOUNT_EMAIL"
+firebase functions:config:set service.key="YOUR_PRIVATE_KEY_FROM_JSON"
+
+# Deploy
+cd functions && npm install && cd ..
+firebase deploy --only functions
 ```
 
-### Step 4: Build APK (5 minutes)
+**Save the function URLs from output!** You'll need them.
+
+### Step 5: Configure Android App (3 minutes)
+
+In `FirebaseSync.kt`, update line 16:
+```kotlin
+private const val FIREBASE_FUNCTION_URL = "https://YOUR-REGION-YOUR-PROJECT.cloudfunctions.net/syncUsageData"
+```
+
+Replace with your actual Firebase Function URL from Step 4.
+
+### Step 6: Build & Test (10 minutes)
+
 1. Open project in Android Studio
 2. Build → Generate Signed Bundle/APK → APK
-3. Choose debug or release variant
-4. APK location: `app/build/outputs/apk/`
-
-### Step 5: Distribute to Participants
-1. Share APK file with participants
-2. Provide installation instructions (see below)
-3. Monitor Google Sheet for incoming data
+3. Install on test device
+4. Register with test name
+5. Check if data appears in Google Sheet!
 
 ---
 
-## 📱 Participant Installation Instructions
+## 🎯 What Makes This Secure?
 
-**Send this to your participants:**
+### OLD (Flawed) Approach:
+❌ Participants had Editor access to sheet  
+❌ Could view all participants' data  
+❌ OAuth popups during sync  
+❌ Access to ALL participant spreadsheets  
 
-### Installing the App
+### NEW (Secure) Firebase Approach:
+✅ Service account writes to sheet  
+✅ Participants can't access sheet  
+✅ No Google account needed  
+✅ Silent background sync  
+✅ Complete privacy  
 
-1. **Download** the APK file I sent you
-2. **Enable Unknown Sources**: 
-   - Go to Settings → Security
-   - Enable "Unknown Sources" or "Install Unknown Apps"
-3. **Install**: Open the APK file and tap Install
-
-### First-Time Setup
-
-1. **Enter Your Name**: Type your full name (needed for payment)
-2. **Grant Usage Access**:
-   - Tap "Grant Usage Access"
-   - Find "Usage Tracker" in the list
-   - Turn it ON
-3. **Grant Notification Access**:
-   - Tap "Grant Notification Access"  
-   - Find "Usage Tracker" in the list
-   - Turn it ON
-4. **Done!** Tap "Continue to Dashboard"
-
-### Daily Usage
-
-- **Just use your phone normally**
-- **Every morning at 10 AM**, you'll get a reminder to check your stats
-- **Open the app** to see how much you used your phone yesterday
-- **Data syncs automatically** - nothing else needed!
-
-### What We're Tracking
-
-✅ Total screen time per day  
-✅ Which apps you use and for how long  
-✅ How many times you unlock your phone  
-✅ How many notifications you get  
-
-❌ We don't see notification content  
-❌ We don't see what you do in apps  
-❌ We don't track your location  
-
-### Study Duration
-
-- **10 days total**
-- You'll see "Study Day 1 of 10" in the app
-- After Day 10, you're done and will receive payment
+**See `MIGRATION_GUIDE.md` for full explanation.**
 
 ---
 
-## 📊 Monitoring Data Collection
+## 📱 Participant Instructions
 
-### Check Your Google Sheet Daily
+**Send this to participants:**
 
-Look for:
-- New rows appearing each day
-- All participants represented
-- Study Day incrementing correctly
-- No blank or zero values
+### Installation
 
-### If Data is Missing
+1. Download APK
+2. Enable "Unknown Sources" in Settings
+3. Install and open app
 
-Contact the participant and ask them to:
-1. Check that permissions are still granted
-2. Open the app and tap "Sync to Google Sheets"
-3. Make sure the app hasn't been force-closed
+### Setup
+
+1. Enter your name (needed for payment)
+2. Wait for server registration
+3. Grant "Usage Access" permission
+4. Grant "Notification Access" permission
+5. Done!
+
+### Daily Use
+
+- Use phone normally
+- Check stats when notified (10 AM daily)
+- Data syncs automatically
+- **No Google account needed!**
+
+---
+
+## 📊 Monitoring
+
+### Check Sync Logs
+```bash
+firebase functions:log --only syncUsageData
+```
+
+### View Statistics
+Visit: `YOUR_FIREBASE_URL/getStats`
+
+### Monitor Costs
+Firebase Console → Usage and billing  
+**Expected:** $0 (free tier covers research)
 
 ---
 
 ## 🔧 Troubleshooting
 
-### "App Won't Install"
-- Participant needs to enable Unknown Sources
-- Check Android version is 7.0 or higher
+**"Registration failed"**  
+→ Check internet connection  
+→ Verify Firebase Function URL in code
 
-### "No Permissions Button"
-- Participant may need to restart app
-- Check device settings manually
+**"Billing account not configured"**  
+→ Upgrade to Blaze plan
 
-### "No Data in Sheet"
-- Verify Sheet ID in code is correct
-- Check internet connectivity
-- Verify Google account access to Sheet
+**"Permission denied" on sheet**  
+→ Share sheet with service account email
 
-### "App Stops Working After Reboot"
-- Some devices require "auto-start" permission
-- Find in Settings → Apps → Usage Tracker → Auto-start
+**Test endpoints:**
+```bash
+# Health check
+curl YOUR_URL/healthCheck
 
----
-
-## 📋 Data Analysis Tips
-
-### Exporting Data
-
-Your Google Sheet has all the data. You can:
-- Download as CSV
-- Import into SPSS, R, Python
-- Analyze directly in Google Sheets
-
-### Key Metrics
-
-- **Screen Time Trend**: Are participants reducing usage?
-- **App Patterns**: Which apps dominate usage?
-- **Unlock Behavior**: Correlation with screen time?
-- **Notification Load**: Impact on engagement?
-
-### Using Anonymous IDs
-
-For analysis:
-- Use Anonymous ID column (removes participant identities)
-- Keep User Name column only for payment tracking
-- Consider removing names after payment
+# Test registration  
+curl -X POST YOUR_URL/registerParticipant \
+  -H "Content-Type: application/json" \
+  -d '{"userName":"Test","anonymousId":"test123"}'
+```
 
 ---
 
-## ✅ Completion Checklist
+## 📖 Full Documentation
 
-After 10 days:
-
-- [ ] All participants have 10 days of data
-- [ ] No major gaps in collection
-- [ ] Data looks reasonable
-- [ ] Payment amounts calculated
-- [ ] Thank participants
-- [ ] Consider anonymizing data (remove names)
+- **Firebase Setup:** `firebase-backend/FIREBASE_SETUP.md` (comprehensive)
+- **Architecture:** `MIGRATION_GUIDE.md` (security explanation)
+- **Technical:** `README.md` (full details)
 
 ---
 
-## 🆘 Need Help?
+## ✅ Pre-Launch Checklist
 
-- **Full documentation**: See `SETUP_GUIDE.md`
-- **Code issues**: Check Android Studio build errors
-- **Google API issues**: Check Cloud Console logs
-- **Participant issues**: Send clear, simple instructions
+- [ ] Firebase project created with Blaze plan
+- [ ] Cloud Functions deployed
+- [ ] Service account created
+- [ ] Google Sheet shared with service account
+- [ ] Function URL updated in app
+- [ ] APK built and tested
+- [ ] Test sync completed successfully
+- [ ] Budget alerts set ($5, $10)
 
----
-
-## 💡 Pro Tips
-
-1. **Test yourself first**: Install the app and test for 24 hours
-2. **Start on a Monday**: Ensures full work weeks are captured
-3. **Over-recruit**: Account for ~20% dropout
-4. **Daily check-ins**: Brief participant check-ins improve completion
-5. **Clear payment terms**: "Complete all 10 days to receive $XX"
-
-**Good luck with your research!** 🎉
+**You're ready!** 🚀
