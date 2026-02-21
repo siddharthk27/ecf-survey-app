@@ -802,6 +802,125 @@ public final class UsageDao_Impl implements UsageDao {
     }, $completion);
   }
 
+  @Override
+  public Object getUnlocksBetween(final long startTime, final long endTime,
+      final Continuation<? super List<UnlockEvent>> $completion) {
+    final String _sql = "SELECT * FROM unlock_events WHERE timestamp BETWEEN ? AND ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, startTime);
+    _argIndex = 2;
+    _statement.bindLong(_argIndex, endTime);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<UnlockEvent>>() {
+      @Override
+      @NonNull
+      public List<UnlockEvent> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfTimestamp = CursorUtil.getColumnIndexOrThrow(_cursor, "timestamp");
+          final int _cursorIndexOfDate = CursorUtil.getColumnIndexOrThrow(_cursor, "date");
+          final int _cursorIndexOfAppPackage = CursorUtil.getColumnIndexOrThrow(_cursor, "appPackage");
+          final int _cursorIndexOfSynced = CursorUtil.getColumnIndexOrThrow(_cursor, "synced");
+          final List<UnlockEvent> _result = new ArrayList<UnlockEvent>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final UnlockEvent _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpTimestamp;
+            _tmpTimestamp = _cursor.getLong(_cursorIndexOfTimestamp);
+            final String _tmpDate;
+            if (_cursor.isNull(_cursorIndexOfDate)) {
+              _tmpDate = null;
+            } else {
+              _tmpDate = _cursor.getString(_cursorIndexOfDate);
+            }
+            final String _tmpAppPackage;
+            if (_cursor.isNull(_cursorIndexOfAppPackage)) {
+              _tmpAppPackage = null;
+            } else {
+              _tmpAppPackage = _cursor.getString(_cursorIndexOfAppPackage);
+            }
+            final boolean _tmpSynced;
+            final int _tmp;
+            _tmp = _cursor.getInt(_cursorIndexOfSynced);
+            _tmpSynced = _tmp != 0;
+            _item = new UnlockEvent(_tmpId,_tmpTimestamp,_tmpDate,_tmpAppPackage,_tmpSynced);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
+  }
+
+  @Override
+  public Object getNotificationsBetween(final long startTime, final long endTime,
+      final Continuation<? super List<NotificationEvent>> $completion) {
+    final String _sql = "SELECT * FROM notification_events WHERE timestamp BETWEEN ? AND ?";
+    final RoomSQLiteQuery _statement = RoomSQLiteQuery.acquire(_sql, 2);
+    int _argIndex = 1;
+    _statement.bindLong(_argIndex, startTime);
+    _argIndex = 2;
+    _statement.bindLong(_argIndex, endTime);
+    final CancellationSignal _cancellationSignal = DBUtil.createCancellationSignal();
+    return CoroutinesRoom.execute(__db, false, _cancellationSignal, new Callable<List<NotificationEvent>>() {
+      @Override
+      @NonNull
+      public List<NotificationEvent> call() throws Exception {
+        final Cursor _cursor = DBUtil.query(__db, _statement, false, null);
+        try {
+          final int _cursorIndexOfId = CursorUtil.getColumnIndexOrThrow(_cursor, "id");
+          final int _cursorIndexOfTimestamp = CursorUtil.getColumnIndexOrThrow(_cursor, "timestamp");
+          final int _cursorIndexOfDate = CursorUtil.getColumnIndexOrThrow(_cursor, "date");
+          final int _cursorIndexOfAppPackage = CursorUtil.getColumnIndexOrThrow(_cursor, "appPackage");
+          final int _cursorIndexOfAppName = CursorUtil.getColumnIndexOrThrow(_cursor, "appName");
+          final int _cursorIndexOfSynced = CursorUtil.getColumnIndexOrThrow(_cursor, "synced");
+          final List<NotificationEvent> _result = new ArrayList<NotificationEvent>(_cursor.getCount());
+          while (_cursor.moveToNext()) {
+            final NotificationEvent _item;
+            final long _tmpId;
+            _tmpId = _cursor.getLong(_cursorIndexOfId);
+            final long _tmpTimestamp;
+            _tmpTimestamp = _cursor.getLong(_cursorIndexOfTimestamp);
+            final String _tmpDate;
+            if (_cursor.isNull(_cursorIndexOfDate)) {
+              _tmpDate = null;
+            } else {
+              _tmpDate = _cursor.getString(_cursorIndexOfDate);
+            }
+            final String _tmpAppPackage;
+            if (_cursor.isNull(_cursorIndexOfAppPackage)) {
+              _tmpAppPackage = null;
+            } else {
+              _tmpAppPackage = _cursor.getString(_cursorIndexOfAppPackage);
+            }
+            final String _tmpAppName;
+            if (_cursor.isNull(_cursorIndexOfAppName)) {
+              _tmpAppName = null;
+            } else {
+              _tmpAppName = _cursor.getString(_cursorIndexOfAppName);
+            }
+            final boolean _tmpSynced;
+            final int _tmp;
+            _tmp = _cursor.getInt(_cursorIndexOfSynced);
+            _tmpSynced = _tmp != 0;
+            _item = new NotificationEvent(_tmpId,_tmpTimestamp,_tmpDate,_tmpAppPackage,_tmpAppName,_tmpSynced);
+            _result.add(_item);
+          }
+          return _result;
+        } finally {
+          _cursor.close();
+          _statement.release();
+        }
+      }
+    }, $completion);
+  }
+
   @NonNull
   public static List<Class<?>> getRequiredConverters() {
     return Collections.emptyList();

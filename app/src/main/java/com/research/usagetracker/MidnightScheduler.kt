@@ -16,19 +16,20 @@ class MidnightAlarmReceiver : BroadcastReceiver() {
         context?.let {
             Log.d("MidnightAlarm", "Midnight alarm triggered")
             
-            // Collect yesterday's data
+            // Collect last 2 hours' data
             CoroutineScope(Dispatchers.IO).launch {
-                val calendar = Calendar.getInstance()
-                calendar.add(Calendar.DAY_OF_YEAR, -1)
-                val yesterday = android.text.format.DateFormat.format("yyyy-MM-dd", calendar).toString()
+                val endTime = System.currentTimeMillis()
+                val startTime = endTime - (2 * 60 * 60 * 1000)
+                val labelFormat = java.text.SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.getDefault())
+                val label = labelFormat.format(java.util.Date(endTime))
                 
                 val collector = UsageStatsCollector(it)
-                val dailyUsage = collector.collectDailyUsageData(yesterday)
+                val dailyUsage = collector.collectUsageData(startTime, endTime, label)
                 
                 dailyUsage?.let { usage ->
                     val database = UsageDatabase.getDatabase(it)
                     database.usageDao().insertDailyUsage(usage)
-                    Log.d("MidnightAlarm", "Saved daily usage for $yesterday")
+                    Log.d("MidnightAlarm", "Saved daily usage for $label")
                     
                     // Trigger sync to Firebase
                     FirebaseSync.syncData(it)
@@ -52,24 +53,16 @@ object MidnightScheduler {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         
-        // Calculate next midnight
-        val calendar = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-            add(Calendar.DAY_OF_YEAR, 1)
-        }
-        
-        val nextMidnight = calendar.timeInMillis
+        // Calculate next 2 hours
+        val nextTime = System.currentTimeMillis() + (2 * 60 * 60 * 1000)
         
         // Set exact alarm for midnight
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
-            nextMidnight,
+            nextTime,
             pendingIntent
         )
         
-        Log.d("MidnightScheduler", "Scheduled next midnight task for: ${Date(nextMidnight)}")
+        Log.d("MidnightScheduler", "Scheduled next 2-hour task for: ${Date(nextTime)}")
     }
 }

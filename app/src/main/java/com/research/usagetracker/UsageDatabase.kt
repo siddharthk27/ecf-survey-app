@@ -43,6 +43,12 @@ interface UsageDao {
     
     @Query("DELETE FROM notification_events WHERE date < :date")
     suspend fun deleteOldNotifications(date: String)
+
+    @Query("SELECT * FROM unlock_events WHERE timestamp BETWEEN :startTime AND :endTime")
+    suspend fun getUnlocksBetween(startTime: Long, endTime: Long): List<UnlockEvent>
+
+    @Query("SELECT * FROM notification_events WHERE timestamp BETWEEN :startTime AND :endTime")
+    suspend fun getNotificationsBetween(startTime: Long, endTime: Long): List<NotificationEvent>
 }
 
 @Database(

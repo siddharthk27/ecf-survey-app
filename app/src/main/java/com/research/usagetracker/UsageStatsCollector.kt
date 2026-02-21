@@ -18,23 +18,10 @@ class UsageStatsCollector(private val context: Context) {
     private val gson = Gson()
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
     
-    suspend fun collectDailyUsageData(date: String = getCurrentDate()): DailyUsage? = withContext(Dispatchers.IO) {
+    suspend fun collectUsageData(startTime: Long, endTime: Long, label: String): DailyUsage? = withContext(Dispatchers.IO) {
         try {
             val prefs = AppPreferences(context)
             val database = UsageDatabase.getDatabase(context)
-            
-            // Get start and end of the specified day
-            val calendar = Calendar.getInstance()
-            val dateObj = dateFormat.parse(date) ?: Date()
-            calendar.time = dateObj
-            calendar.set(Calendar.HOUR_OF_DAY, 0)
-            calendar.set(Calendar.MINUTE, 0)
-            calendar.set(Calendar.SECOND, 0)
-            calendar.set(Calendar.MILLISECOND, 0)
-            val startTime = calendar.timeInMillis
-            
-            calendar.add(Calendar.DAY_OF_YEAR, 1)
-            val endTime = calendar.timeInMillis
             
             // Get usage stats for the day
             val usageStatsList = usageStatsManager.queryUsageStats(
@@ -64,8 +51,8 @@ class UsageStatsCollector(private val context: Context) {
                     )
                 }
             
-            // Get unlock events for the day
-            val unlockEvents = database.usageDao().getUnlocksByDate(date)
+            // Get unlock events for the period
+            val unlockEvents = database.usageDao().getUnlocksBetween(startTime, endTime)
             val unlockCount = unlockEvents.size
             
             // Aggregate unlock apps (which apps were opened after unlocking)
@@ -78,8 +65,8 @@ class UsageStatsCollector(private val context: Context) {
                 }
                 .sortedByDescending { it.count }
             
-            // Get notifications for the day
-            val notifications = database.usageDao().getNotificationsByDate(date)
+            // Get notifications for the period
+            val notifications = database.usageDao().getNotificationsBetween(startTime, endTime)
             val notificationCount = notifications.size
             
             // Group notifications by app
@@ -90,7 +77,7 @@ class UsageStatsCollector(private val context: Context) {
             
             // Create daily usage record
             DailyUsage(
-                date = date,
+                date = label,
                 userName = prefs.getUserName(),
                 anonymousId = prefs.getAnonymousId(),
                 studyDay = prefs.getStudyDay(),
