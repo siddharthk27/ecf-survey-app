@@ -30,9 +30,16 @@ exports.registerParticipant = functions.https.onRequest(async (req, res) => {
             userName: userName,
             anonymousId: anonymousId,
             registeredAt: admin.firestore.FieldValue.serverTimestamp(),
+            active: true,
         });
 
-        res.status(200).json({token: token});
+        functions.logger.info(`Registered participant: ${userName} (${anonymousId})`);
+
+        res.status(200).json({
+            success: true,
+            participantToken: token,
+            message: "Participant registered successfully",
+        });
     } catch (error) {
         functions.logger.error("Registration error:", error);
         res.status(500).json({error: "Internal server error"});
@@ -42,14 +49,14 @@ exports.registerParticipant = functions.https.onRequest(async (req, res) => {
 // 3. Secure Sync to Google Sheets
 exports.syncUsageData = functions.https.onRequest(async (req, res) => {
     try {
-        const {token, rowData} = req.body;
+        const {participantToken, data} = req.body;
 
-        if (!token || !rowData) {
-            return res.status(400).json({error: "Missing token or data"});
+        if (!participantToken || !data || !Array.isArray(data)) {
+            return res.status(400).json({error: "Missing token or data array"});
         }
 
-        const participantDoc = await db.collection("participants").doc(token).get();
-        if (!participantDoc.exists) {
+        const participantDoc = await db.collection("participants").doc(participantToken).get();
+        if (!participantDoc.exists || participantDoc.data().active === false) {
             return res.status(403).json({error: "Unauthorized. Invalid token."});
         }
 
@@ -58,27 +65,48 @@ exports.syncUsageData = functions.https.onRequest(async (req, res) => {
         });
         const sheets = google.sheets({version: "v4", auth});
 
-        await sheets.spreadsheets.values.append({
+        const rows = data.map((item) => [
+            item.date,
+            item.userName,
+            item.anonymousId,
+            (item.studyDay !== undefined ? item.studyDay : "0").toString(),
+            (item.totalScreenTimeMin !== undefined ? item.totalScreenTimeMin : "0").toString(),
+            item.topApps || "",
+            (item.totalUnlocks !== undefined ? item.totalUnlocks : "0").toString(),
+            item.topUnlockApps || "",
+            (item.totalNotifications !== undefined ? item.totalNotifications : "0").toString(),
+            item.topNotificationApps || "",
+        ]);
+
+        if (rows.length === 0) {
+            return res.status(200).json({success: true, rowsAdded: 0});
+        }
+
+        const response = await sheets.spreadsheets.values.append({
             spreadsheetId: SPREADSHEET_ID,
             range: "Sheet1!A:J",
             valueInputOption: "RAW",
             requestBody: {
-                values: [rowData],
+                values: rows,
             },
         });
 
+        const updatedRows = (response.data && response.data.updates && response.data.updates.updatedRows) || rows.length;
+
         await db.collection("sync_logs").add({
             anonymousId: participantDoc.data().anonymousId,
-                                             timestamp: admin.firestore.FieldValue.serverTimestamp(),
-                                             status: "success",
+            rowCount: rows.length,
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            status: "success",
         });
 
         res.status(200).json({
             success: true,
+            rowsAdded: updatedRows,
             message: "Data synced securely!",
         });
     } catch (error) {
         functions.logger.error("Sync error:", error);
-        res.status(500).json({error: "Failed to sync data"});
+        res.status(500).json({success: false, error: "Failed to sync data"});
     }
 });
