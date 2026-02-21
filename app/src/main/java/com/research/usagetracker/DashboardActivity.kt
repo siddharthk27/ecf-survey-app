@@ -156,6 +156,10 @@ class DashboardActivity : AppCompatActivity() {
     }
     
     private fun updateScreenTimeChart(data: List<DailyUsage>) {
+        if (data.isEmpty()) {
+            screenTimeChart.clear()
+            return
+        }
         val entries = mutableListOf<BarEntry>()
         val labels = mutableListOf<String>()
         
@@ -183,6 +187,10 @@ class DashboardActivity : AppCompatActivity() {
     }
     
     private fun updateAppUsagePieChart(apps: List<AppUsage>) {
+        if (apps.isEmpty()) {
+            appUsageChart.clear()
+            return
+        }
         val entries = mutableListOf<PieEntry>()
         
         apps.forEach { app ->

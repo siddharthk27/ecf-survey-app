@@ -85,7 +85,11 @@ class PermissionSetupActivity : AppCompatActivity() {
     
     private fun startTrackingServices() {
         // Start the usage tracking service
-        startService(Intent(this, UsageTrackingService::class.java))
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(Intent(this, UsageTrackingService::class.java))
+        } else {
+            startService(Intent(this, UsageTrackingService::class.java))
+        }
         
         // Schedule midnight data collection
         MidnightScheduler.scheduleMidnightTask(this)
