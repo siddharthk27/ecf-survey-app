@@ -215,13 +215,15 @@ class DashboardActivity : AppCompatActivity() {
             syncButton.isEnabled = false
             syncButton.text = "Syncing..."
             
-            withContext(Dispatchers.IO) {
+            val result = withContext(Dispatchers.IO) {
                 FirebaseSync.syncData(this@DashboardActivity)
             }
             
             syncButton.isEnabled = true
             syncButton.text = "Sync to Firebase"
-            Toast.makeText(this@DashboardActivity, "Data synced!", Toast.LENGTH_SHORT).show()
+            
+            val toastMsg = if (result.first) "Success: ${result.second}" else "Failed: ${result.second}"
+            Toast.makeText(this@DashboardActivity, toastMsg, Toast.LENGTH_LONG).show()
         }
     }
 }

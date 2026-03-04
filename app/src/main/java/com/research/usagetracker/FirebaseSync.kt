@@ -18,14 +18,14 @@ object FirebaseSync {
     
     private val gson = Gson()
     
-    suspend fun syncData(context: Context) = withContext(Dispatchers.IO) {
+    suspend fun syncData(context: Context): Pair<Boolean, String> = withContext(Dispatchers.IO) {
         try {
             val prefs = AppPreferences(context)
             val participantToken = prefs.getParticipantToken()
             
             if (participantToken.isEmpty()) {
                 Log.e("FirebaseSync", "No participant token found")
-                return@withContext
+                return@withContext Pair(false, "Not registered. No token.")
             }
             
             val database = UsageDatabase.getDatabase(context)
@@ -33,7 +33,7 @@ object FirebaseSync {
             
             if (unsyncedData.isEmpty()) {
                 Log.d("FirebaseSync", "No data to sync")
-                return@withContext
+                return@withContext Pair(true, "No new data to sync.")
             }
             
             // Prepare data payload
@@ -100,12 +100,16 @@ object FirebaseSync {
                         }
                         
                         prefs.setLastSyncTime(System.currentTimeMillis())
+                        return@withContext Pair(true, "Successfully synced $rowsAdded rows")
                     } else {
-                        Log.e("FirebaseSync", "Sync failed: ${jsonResponse.optString("error")}")
+                        val errorStr = jsonResponse.optString("error")
+                        Log.e("FirebaseSync", "Sync failed: $errorStr")
+                        return@withContext Pair(false, "Sync failed: $errorStr")
                     }
                 } else {
                     val errorResponse = connection.errorStream?.bufferedReader()?.use { it.readText() }
                     Log.e("FirebaseSync", "HTTP error $responseCode: $errorResponse")
+                    return@withContext Pair(false, "Server Error $responseCode")
                 }
             } finally {
                 connection.disconnect()
@@ -113,6 +117,7 @@ object FirebaseSync {
             
         } catch (e: Exception) {
             Log.e("FirebaseSync", "Error syncing data", e)
+            return@withContext Pair(false, "Network error: ${e.message}")
         }
     }
     
