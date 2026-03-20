@@ -1,14 +1,10 @@
 /* eslint-disable max-len */
 const functions = require("firebase-functions");
 const admin = require("firebase-admin");
-const {google} = require("googleapis");
 const crypto = require("crypto");
 
 admin.initializeApp();
 const db = admin.firestore();
-
-// ⚠️ PASTE YOUR SPREADSHEET ID HERE
-const SPREADSHEET_ID = "1TOAuz8M7kZJrfOOD7p2YFUaGcv6v70VazxgLpXhLnFY";
 
 // 1. Health Check
 exports.healthCheck = functions.https.onRequest((req, res) => {
@@ -46,7 +42,7 @@ exports.registerParticipant = functions.https.onRequest(async (req, res) => {
     }
 });
 
-// 3. Secure Sync to Google Sheets
+// 3. Secure Sync to Firestore
 exports.syncUsageData = functions.https.onRequest(async (req, res) => {
     try {
         const {participantToken, data} = req.body;
@@ -60,53 +56,88 @@ exports.syncUsageData = functions.https.onRequest(async (req, res) => {
             return res.status(403).json({error: "Unauthorized. Invalid token."});
         }
 
-        const auth = new google.auth.GoogleAuth({
-            scopes: ["https://www.googleapis.com/auth/spreadsheets"],
-        });
-        const sheets = google.sheets({version: "v4", auth});
-
-        const rows = data.map((item) => [
-            item.date,
-            item.userName,
-            item.anonymousId,
-            (item.studyDay !== undefined ? item.studyDay : "0").toString(),
-            (item.totalScreenTimeMin !== undefined ? item.totalScreenTimeMin : "0").toString(),
-            item.topApps || "",
-            (item.totalUnlocks !== undefined ? item.totalUnlocks : "0").toString(),
-            item.topUnlockApps || "",
-            (item.totalNotifications !== undefined ? item.totalNotifications : "0").toString(),
-            item.topNotificationApps || "",
-        ]);
-
-        if (rows.length === 0) {
+        if (data.length === 0) {
             return res.status(200).json({success: true, rowsAdded: 0});
         }
 
-        const response = await sheets.spreadsheets.values.append({
-            spreadsheetId: SPREADSHEET_ID,
-            range: "Sheet1!A:J",
-            valueInputOption: "RAW",
-            requestBody: {
-                values: rows,
-            },
+        const batch = db.batch();
+        data.forEach((item) => {
+            const docRef = db.collection("usage_logs").doc();
+            batch.set(docRef, {
+                ...item,
+                participantToken: participantToken,
+                anonymousId: participantDoc.data().anonymousId,
+                userName: participantDoc.data().userName,
+                uploadedAt: admin.firestore.FieldValue.serverTimestamp(),
+            });
         });
-
-        const updatedRows = (response.data && response.data.updates && response.data.updates.updatedRows) || rows.length;
+        await batch.commit();
 
         await db.collection("sync_logs").add({
             anonymousId: participantDoc.data().anonymousId,
-            rowCount: rows.length,
+            rowCount: data.length,
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
             status: "success",
         });
 
         res.status(200).json({
             success: true,
-            rowsAdded: updatedRows,
-            message: "Data synced securely!",
+            rowsAdded: data.length,
+            message: "Data synced securely to Firestore!",
         });
     } catch (error) {
         functions.logger.error("Sync error:", error);
         res.status(500).json({success: false, error: "Failed to sync data"});
+    }
+});
+
+// 4. Export Data to CSV
+exports.exportDataToCsv = functions.https.onRequest(async (req, res) => {
+    try {
+        const logsSnapshot = await db.collection("usage_logs").orderBy("uploadedAt", "desc").get();
+
+        const headersList = [
+            "date",
+            "userName",
+            "anonymousId",
+            "studyDay",
+            "totalScreenTimeMin",
+            "topApps",
+            "totalUnlocks",
+            "topUnlockApps",
+            "totalNotifications",
+            "topNotificationApps",
+            "uploadedAt",
+        ];
+
+        let csv = headersList.join(",") + "\n";
+
+        if (!logsSnapshot.empty) {
+            logsSnapshot.forEach((doc) => {
+                const data = doc.data();
+                const row = headersList.map((field) => {
+                    let value = data[field];
+                    if (field === "uploadedAt" && value && value.toDate) {
+                        value = value.toDate().toISOString();
+                    }
+                    if (value === undefined || value === null) {
+                        return "";
+                    }
+                    const strValue = String(value);
+                    if (strValue.includes(",") || strValue.includes("\\n") || strValue.includes("\"")) {
+                        return `"${strValue.replace(/"/g, "\"\"")}"`;
+                    }
+                    return strValue;
+                });
+                csv += row.join(",") + "\n";
+            });
+        }
+
+        res.setHeader("Content-Type", "text/csv");
+        res.setHeader("Content-Disposition", "attachment; filename=usage_logs.csv");
+        res.status(200).send(csv);
+    } catch (error) {
+        functions.logger.error("Export error:", error);
+        res.status(500).send("Error generating CSV");
     }
 });
