@@ -4,7 +4,6 @@ package com.research.usagetracker.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
@@ -41,9 +40,6 @@ public final class ActivityDashboardBinding implements ViewBinding {
   public final TextView studyDayText;
 
   @NonNull
-  public final Button syncButton;
-
-  @NonNull
   public final TextView topAppsText;
 
   @NonNull
@@ -58,7 +54,7 @@ public final class ActivityDashboardBinding implements ViewBinding {
   private ActivityDashboardBinding(@NonNull ScrollView rootView, @NonNull PieChart appUsageChart,
       @NonNull TextView dateText, @NonNull TextView notificationsText,
       @NonNull BarChart screenTimeChart, @NonNull TextView screenTimeText,
-      @NonNull TextView studyDayText, @NonNull Button syncButton, @NonNull TextView topAppsText,
+      @NonNull TextView studyDayText, @NonNull TextView topAppsText,
       @NonNull TextView topNotificationAppsText, @NonNull TextView topUnlockAppsText,
       @NonNull TextView unlocksText) {
     this.rootView = rootView;
@@ -68,7 +64,6 @@ public final class ActivityDashboardBinding implements ViewBinding {
     this.screenTimeChart = screenTimeChart;
     this.screenTimeText = screenTimeText;
     this.studyDayText = studyDayText;
-    this.syncButton = syncButton;
     this.topAppsText = topAppsText;
     this.topNotificationAppsText = topNotificationAppsText;
     this.topUnlockAppsText = topUnlockAppsText;
@@ -138,12 +133,6 @@ public final class ActivityDashboardBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.syncButton;
-      Button syncButton = ViewBindings.findChildViewById(rootView, id);
-      if (syncButton == null) {
-        break missingId;
-      }
-
       id = R.id.topAppsText;
       TextView topAppsText = ViewBindings.findChildViewById(rootView, id);
       if (topAppsText == null) {
@@ -169,7 +158,7 @@ public final class ActivityDashboardBinding implements ViewBinding {
       }
 
       return new ActivityDashboardBinding((ScrollView) rootView, appUsageChart, dateText,
-          notificationsText, screenTimeChart, screenTimeText, studyDayText, syncButton, topAppsText,
+          notificationsText, screenTimeChart, screenTimeText, studyDayText, topAppsText,
           topNotificationAppsText, topUnlockAppsText, unlocksText);
     }
     String missingId = rootView.getResources().getResourceName(id);

@@ -181,16 +181,6 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Sync Button -->
-        <Button
-            android:id="@+id/syncButton"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Sync to Firebase"
-            android:textSize="16sp"
-            android:padding="16dp"
-            android:layout_marginBottom="16dp"/>
-
     </LinearLayout>
 
 </ScrollView>

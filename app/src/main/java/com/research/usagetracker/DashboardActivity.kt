@@ -32,8 +32,7 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var topNotificationAppsText: TextView
     private lateinit var screenTimeChart: BarChart
     private lateinit var appUsageChart: PieChart
-    private lateinit var syncButton: Button
-    
+
     private lateinit var database: UsageDatabase
     private lateinit var prefs: AppPreferences
     private val gson = Gson()
@@ -49,8 +48,9 @@ class DashboardActivity : AppCompatActivity() {
         initViews()
         loadDashboardData()
         
-        syncButton.setOnClickListener {
-            syncData()
+        // Trigger automatic silent sync when dashboard is opened
+        CoroutineScope(Dispatchers.IO).launch {
+            FirebaseSync.syncData(this@DashboardActivity)
         }
     }
     
@@ -65,7 +65,6 @@ class DashboardActivity : AppCompatActivity() {
         topNotificationAppsText = findViewById(R.id.topNotificationAppsText)
         screenTimeChart = findViewById(R.id.screenTimeChart)
         appUsageChart = findViewById(R.id.appUsageChart)
-        syncButton = findViewById(R.id.syncButton)
     }
     
     private fun loadDashboardData() {
@@ -208,22 +207,5 @@ class DashboardActivity : AppCompatActivity() {
         appUsageChart.centerText = "App Usage"
         appUsageChart.animateY(1000)
         appUsageChart.invalidate()
-    }
-    
-    private fun syncData() {
-        CoroutineScope(Dispatchers.Main).launch {
-            syncButton.isEnabled = false
-            syncButton.text = "Syncing..."
-            
-            val result = withContext(Dispatchers.IO) {
-                FirebaseSync.syncData(this@DashboardActivity)
-            }
-            
-            syncButton.isEnabled = true
-            syncButton.text = "Sync to Firebase"
-            
-            val toastMsg = if (result.first) "Success: ${result.second}" else "Failed: ${result.second}"
-            Toast.makeText(this@DashboardActivity, toastMsg, Toast.LENGTH_LONG).show()
-        }
     }
 }
