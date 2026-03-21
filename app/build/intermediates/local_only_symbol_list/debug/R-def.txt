@@ -1,18 +1,24 @@
 R_DEF: Internal format may change without notice
 local
 id appUsageChart
+id appUsageChartCard
 id continueButton
 id dateText
 id nameInput
 id notificationAccessButton
 id notificationsText
 id screenTimeChart
+id screenTimeChartCard
 id screenTimeText
 id startButton
 id statusText
 id studyDayText
+id summaryCard
+id topAppsCard
 id topAppsText
+id topNotificationAppsCard
 id topNotificationAppsText
+id topUnlockAppsCard
 id topUnlockAppsText
 id unlocksText
 id usageAccessButton

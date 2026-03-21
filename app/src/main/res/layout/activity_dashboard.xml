@@ -28,6 +28,7 @@
 
         <!-- Summary Cards -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/summaryCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -69,6 +70,7 @@
 
         <!-- Screen Time Chart -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/screenTimeChartCard"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_marginBottom="16dp"
@@ -99,6 +101,7 @@
 
         <!-- App Usage Pie Chart -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/appUsageChartCard"
             android:layout_width="match_parent"
             android:layout_height="250dp"
             android:layout_marginBottom="16dp"
@@ -129,6 +132,7 @@
 
         <!-- Top Apps -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/topAppsCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -147,6 +151,7 @@
 
         <!-- Top Unlock Apps -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/topUnlockAppsCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
@@ -165,6 +170,7 @@
 
         <!-- Top Notification Apps -->
         <androidx.cardview.widget.CardView
+            android:id="@+id/topNotificationAppsCard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"

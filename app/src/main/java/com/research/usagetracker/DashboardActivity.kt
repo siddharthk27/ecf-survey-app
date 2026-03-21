@@ -32,6 +32,13 @@ class DashboardActivity : AppCompatActivity() {
     private lateinit var topNotificationAppsText: TextView
     private lateinit var screenTimeChart: BarChart
     private lateinit var appUsageChart: PieChart
+    
+    private lateinit var summaryCard: androidx.cardview.widget.CardView
+    private lateinit var screenTimeChartCard: androidx.cardview.widget.CardView
+    private lateinit var appUsageChartCard: androidx.cardview.widget.CardView
+    private lateinit var topAppsCard: androidx.cardview.widget.CardView
+    private lateinit var topUnlockAppsCard: androidx.cardview.widget.CardView
+    private lateinit var topNotificationAppsCard: androidx.cardview.widget.CardView
 
     private lateinit var database: UsageDatabase
     private lateinit var prefs: AppPreferences
@@ -65,29 +72,72 @@ class DashboardActivity : AppCompatActivity() {
         topNotificationAppsText = findViewById(R.id.topNotificationAppsText)
         screenTimeChart = findViewById(R.id.screenTimeChart)
         appUsageChart = findViewById(R.id.appUsageChart)
+        summaryCard = findViewById(R.id.summaryCard)
+        screenTimeChartCard = findViewById(R.id.screenTimeChartCard)
+        appUsageChartCard = findViewById(R.id.appUsageChartCard)
+        topAppsCard = findViewById(R.id.topAppsCard)
+        topUnlockAppsCard = findViewById(R.id.topUnlockAppsCard)
+        topNotificationAppsCard = findViewById(R.id.topNotificationAppsCard)
     }
     
     private fun loadDashboardData() {
         CoroutineScope(Dispatchers.Main).launch {
             try {
-                // Get yesterday's date
+                val collector = UsageStatsCollector(this@DashboardActivity)
+                
+                // Get yesterday's exact period dynamically
                 val calendar = Calendar.getInstance()
                 calendar.add(Calendar.DAY_OF_YEAR, -1)
-                val yesterday = dateFormat.format(calendar.time)
+                
+                calendar.set(Calendar.HOUR_OF_DAY, 0)
+                calendar.set(Calendar.MINUTE, 0)
+                calendar.set(Calendar.SECOND, 0)
+                calendar.set(Calendar.MILLISECOND, 0)
+                val startOfYesterday = calendar.timeInMillis
+                
+                calendar.set(Calendar.HOUR_OF_DAY, 23)
+                calendar.set(Calendar.MINUTE, 59)
+                calendar.set(Calendar.SECOND, 59)
+                calendar.set(Calendar.MILLISECOND, 999)
+                val endOfYesterday = calendar.timeInMillis
+                
+                val yesterdayLabel = dateFormat.format(calendar.time)
                 
                 val yesterdayData = withContext(Dispatchers.IO) {
-                    database.usageDao().getUsageByDate(yesterday)
+                    collector.collectUsageData(startOfYesterday, endOfYesterday, yesterdayLabel)
                 }
                 
-                if (yesterdayData != null) {
+                if (yesterdayData != null && yesterdayData.totalScreenTimeMs > 0) {
                     displayData(yesterdayData)
                 } else {
-                    // No data for yesterday yet
                     displayNoData()
                 }
                 
-                // Load chart data for last 7 days
-                loadChartData()
+                // Load true 24-hr daily blocks for chart gracefully avoiding 2-hr fragments
+                val last7DaysData = mutableListOf<DailyUsage>()
+                for (i in 0..6) {
+                    val c = Calendar.getInstance()
+                    c.add(Calendar.DAY_OF_YEAR, -i)
+                    c.set(Calendar.HOUR_OF_DAY, 0)
+                    c.set(Calendar.MINUTE, 0)
+                    c.set(Calendar.SECOND, 0)
+                    c.set(Calendar.MILLISECOND, 0)
+                    val startDay = c.timeInMillis
+                    
+                    c.set(Calendar.HOUR_OF_DAY, 23)
+                    c.set(Calendar.MINUTE, 59)
+                    c.set(Calendar.SECOND, 59)
+                    c.set(Calendar.MILLISECOND, 999)
+                    val endDay = c.timeInMillis
+                    
+                    val dayLabel = dateFormat.format(c.time)
+                    val data = withContext(Dispatchers.IO) {
+                        collector.collectUsageData(startDay, endDay, dayLabel)
+                    }
+                    if (data != null) last7DaysData.add(data)
+                }
+                
+                updateScreenTimeChart(last7DaysData)
                 
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -97,7 +147,8 @@ class DashboardActivity : AppCompatActivity() {
     }
     
     private fun displayData(usage: DailyUsage) {
-        studyDayText.text = "Study Day ${usage.studyDay} of 10"
+        val day = usage.studyDay
+        studyDayText.text = if (day > 10) "Study Completed" else "Study Day $day of 10"
         dateText.text = "Data from: ${usage.date}"
         
         val screenTimeMinutes = usage.totalScreenTimeMs / 60000
@@ -107,6 +158,12 @@ class DashboardActivity : AppCompatActivity() {
         
         unlocksText.text = "Phone Unlocks: ${usage.totalUnlocks}"
         notificationsText.text = "Notifications: ${usage.totalNotifications}"
+        
+        // Show all cards
+        appUsageChartCard.visibility = android.view.View.VISIBLE
+        topAppsCard.visibility = android.view.View.VISIBLE
+        topUnlockAppsCard.visibility = android.view.View.VISIBLE
+        topNotificationAppsCard.visibility = android.view.View.VISIBLE
         
         // Top apps
         val appUsageList = gson.fromJson(usage.appUsageJson, Array<AppUsage>::class.java).toList()
@@ -130,28 +187,28 @@ class DashboardActivity : AppCompatActivity() {
         val topNotifText = topNotifApps.joinToString("\n") {
             "• ${it.appName}: ${it.count} notifications"
         }
-        topNotificationAppsText.text = "Most Notifications:\n$topNotifText"
+        this.topNotificationAppsText.text = "Most Notifications:\n$topNotifText"
         
         // Update pie chart for app usage
         updateAppUsagePieChart(topApps)
     }
     
     private fun displayNoData() {
-        studyDayText.text = "Study Day ${prefs.getStudyDay()} of 10"
+        val day = prefs.getStudyDay()
+        studyDayText.text = if (day > 10) "Study Completed" else "Study Day $day of 10"
         dateText.text = "No data available yet"
-        screenTimeText.text = "Check back tomorrow!"
+        screenTimeText.text = "Wait for the next data collection."
         unlocksText.text = ""
         notificationsText.text = ""
         topAppsText.text = ""
         topUnlockAppsText.text = ""
         topNotificationAppsText.text = ""
-    }
-    
-    private suspend fun loadChartData() = withContext(Dispatchers.IO) {
-        val recentData = database.usageDao().getRecentUsage()
-        withContext(Dispatchers.Main) {
-            updateScreenTimeChart(recentData)
-        }
+        
+        // Hide completely empty cards
+        appUsageChartCard.visibility = android.view.View.GONE
+        topAppsCard.visibility = android.view.View.GONE
+        topUnlockAppsCard.visibility = android.view.View.GONE
+        topNotificationAppsCard.visibility = android.view.View.GONE
     }
     
     private fun updateScreenTimeChart(data: List<DailyUsage>) {
@@ -179,6 +236,7 @@ class DashboardActivity : AppCompatActivity() {
         xAxis.valueFormatter = IndexAxisValueFormatter(labels)
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.granularity = 1f
+        xAxis.labelRotationAngle = -45f
         
         screenTimeChart.description.isEnabled = false
         screenTimeChart.animateY(1000)

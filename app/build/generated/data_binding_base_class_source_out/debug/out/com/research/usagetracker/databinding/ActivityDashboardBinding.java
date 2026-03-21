@@ -8,6 +8,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.viewbinding.ViewBinding;
 import androidx.viewbinding.ViewBindings;
 import com.github.mikephil.charting.charts.BarChart;
@@ -25,6 +26,9 @@ public final class ActivityDashboardBinding implements ViewBinding {
   public final PieChart appUsageChart;
 
   @NonNull
+  public final CardView appUsageChartCard;
+
+  @NonNull
   public final TextView dateText;
 
   @NonNull
@@ -34,16 +38,31 @@ public final class ActivityDashboardBinding implements ViewBinding {
   public final BarChart screenTimeChart;
 
   @NonNull
+  public final CardView screenTimeChartCard;
+
+  @NonNull
   public final TextView screenTimeText;
 
   @NonNull
   public final TextView studyDayText;
 
   @NonNull
+  public final CardView summaryCard;
+
+  @NonNull
+  public final CardView topAppsCard;
+
+  @NonNull
   public final TextView topAppsText;
 
   @NonNull
+  public final CardView topNotificationAppsCard;
+
+  @NonNull
   public final TextView topNotificationAppsText;
+
+  @NonNull
+  public final CardView topUnlockAppsCard;
 
   @NonNull
   public final TextView topUnlockAppsText;
@@ -52,20 +71,28 @@ public final class ActivityDashboardBinding implements ViewBinding {
   public final TextView unlocksText;
 
   private ActivityDashboardBinding(@NonNull ScrollView rootView, @NonNull PieChart appUsageChart,
-      @NonNull TextView dateText, @NonNull TextView notificationsText,
-      @NonNull BarChart screenTimeChart, @NonNull TextView screenTimeText,
-      @NonNull TextView studyDayText, @NonNull TextView topAppsText,
-      @NonNull TextView topNotificationAppsText, @NonNull TextView topUnlockAppsText,
-      @NonNull TextView unlocksText) {
+      @NonNull CardView appUsageChartCard, @NonNull TextView dateText,
+      @NonNull TextView notificationsText, @NonNull BarChart screenTimeChart,
+      @NonNull CardView screenTimeChartCard, @NonNull TextView screenTimeText,
+      @NonNull TextView studyDayText, @NonNull CardView summaryCard, @NonNull CardView topAppsCard,
+      @NonNull TextView topAppsText, @NonNull CardView topNotificationAppsCard,
+      @NonNull TextView topNotificationAppsText, @NonNull CardView topUnlockAppsCard,
+      @NonNull TextView topUnlockAppsText, @NonNull TextView unlocksText) {
     this.rootView = rootView;
     this.appUsageChart = appUsageChart;
+    this.appUsageChartCard = appUsageChartCard;
     this.dateText = dateText;
     this.notificationsText = notificationsText;
     this.screenTimeChart = screenTimeChart;
+    this.screenTimeChartCard = screenTimeChartCard;
     this.screenTimeText = screenTimeText;
     this.studyDayText = studyDayText;
+    this.summaryCard = summaryCard;
+    this.topAppsCard = topAppsCard;
     this.topAppsText = topAppsText;
+    this.topNotificationAppsCard = topNotificationAppsCard;
     this.topNotificationAppsText = topNotificationAppsText;
+    this.topUnlockAppsCard = topUnlockAppsCard;
     this.topUnlockAppsText = topUnlockAppsText;
     this.unlocksText = unlocksText;
   }
@@ -103,6 +130,12 @@ public final class ActivityDashboardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.appUsageChartCard;
+      CardView appUsageChartCard = ViewBindings.findChildViewById(rootView, id);
+      if (appUsageChartCard == null) {
+        break missingId;
+      }
+
       id = R.id.dateText;
       TextView dateText = ViewBindings.findChildViewById(rootView, id);
       if (dateText == null) {
@@ -121,6 +154,12 @@ public final class ActivityDashboardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.screenTimeChartCard;
+      CardView screenTimeChartCard = ViewBindings.findChildViewById(rootView, id);
+      if (screenTimeChartCard == null) {
+        break missingId;
+      }
+
       id = R.id.screenTimeText;
       TextView screenTimeText = ViewBindings.findChildViewById(rootView, id);
       if (screenTimeText == null) {
@@ -133,15 +172,39 @@ public final class ActivityDashboardBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.summaryCard;
+      CardView summaryCard = ViewBindings.findChildViewById(rootView, id);
+      if (summaryCard == null) {
+        break missingId;
+      }
+
+      id = R.id.topAppsCard;
+      CardView topAppsCard = ViewBindings.findChildViewById(rootView, id);
+      if (topAppsCard == null) {
+        break missingId;
+      }
+
       id = R.id.topAppsText;
       TextView topAppsText = ViewBindings.findChildViewById(rootView, id);
       if (topAppsText == null) {
         break missingId;
       }
 
+      id = R.id.topNotificationAppsCard;
+      CardView topNotificationAppsCard = ViewBindings.findChildViewById(rootView, id);
+      if (topNotificationAppsCard == null) {
+        break missingId;
+      }
+
       id = R.id.topNotificationAppsText;
       TextView topNotificationAppsText = ViewBindings.findChildViewById(rootView, id);
       if (topNotificationAppsText == null) {
+        break missingId;
+      }
+
+      id = R.id.topUnlockAppsCard;
+      CardView topUnlockAppsCard = ViewBindings.findChildViewById(rootView, id);
+      if (topUnlockAppsCard == null) {
         break missingId;
       }
 
@@ -157,9 +220,10 @@ public final class ActivityDashboardBinding implements ViewBinding {
         break missingId;
       }
 
-      return new ActivityDashboardBinding((ScrollView) rootView, appUsageChart, dateText,
-          notificationsText, screenTimeChart, screenTimeText, studyDayText, topAppsText,
-          topNotificationAppsText, topUnlockAppsText, unlocksText);
+      return new ActivityDashboardBinding((ScrollView) rootView, appUsageChart, appUsageChartCard,
+          dateText, notificationsText, screenTimeChart, screenTimeChartCard, screenTimeText,
+          studyDayText, summaryCard, topAppsCard, topAppsText, topNotificationAppsCard,
+          topNotificationAppsText, topUnlockAppsCard, topUnlockAppsText, unlocksText);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

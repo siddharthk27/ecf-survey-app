@@ -3159,6 +3159,7 @@ id animateToStart
 id antiClockwise
 id anticipate
 id appUsageChart
+id appUsageChartCard
 id arc
 id asConfigured
 id async
@@ -3456,6 +3457,7 @@ id sawtooth
 id scale
 id screen
 id screenTimeChart
+id screenTimeChartCard
 id screenTimeText
 id scroll
 id scrollIndicatorDown
@@ -3515,6 +3517,7 @@ id stretch
 id studyDayText
 id submenuarrow
 id submit_area
+id summaryCard
 id supportScrollUp
 id tabMode
 id tag_accessibility_actions
@@ -3552,9 +3555,12 @@ id titleDividerNoCustom
 id title_template
 id toggle
 id top
+id topAppsCard
 id topAppsText
+id topNotificationAppsCard
 id topNotificationAppsText
 id topPanel
+id topUnlockAppsCard
 id topUnlockAppsText
 id touch_outside
 id transitionToEnd
