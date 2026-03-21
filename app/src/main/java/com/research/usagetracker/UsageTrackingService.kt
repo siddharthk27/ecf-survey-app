@@ -152,7 +152,7 @@ class UsageTrackingService : Service() {
             "com.android.systemui",
             "com.google.android.apps.nexuslauncher",
             "com.android.launcher",
-            packageName // Exclude our own app
+            "com.research.usagetracker" // Exclude our own app
         )
         return systemPackages.any { packageName.contains(it, ignoreCase = true) }
     }
